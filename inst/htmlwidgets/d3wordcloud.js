@@ -119,6 +119,9 @@ HTMLWidgets.widget({
       var text = instance.vis.selectAll("text")
         .data(words, function(d) { return d.text.toLowerCase(); });
 
+      /* Remove text nodes not attached to any data */
+      text.exit().remove();
+
       text.transition()
         .duration(1000)
         .attr("transform", function(d) { return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"; })
@@ -143,8 +146,9 @@ HTMLWidgets.widget({
         })
         .attr("data-toggle", "tooltip")
         .text(function(d) { return d.text; })
-        .on("click", function(d) { 
-            console.log("Selected words:"+d.text);  
+        .on("click", function(d) {
+            console.log("Selected words:"+d.text);
+
 			if (typeof Shiny != 'undefined') {
 			Shiny.onInputChange('d3wordcloud_click',d.text) }
 		});;
@@ -155,7 +159,7 @@ HTMLWidgets.widget({
         .attr("transform", instance.vis.attr("transform"));
 
       var exitGroupNode = exitGroup.node();
-
+      console.log(exitGroupNode);
       text.exit().each(function() {
         exitGroupNode.appendChild(this);
       });
